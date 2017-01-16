@@ -9,32 +9,28 @@ class Game extends Phaser.State {
   }
 
   create() {
-    var text = this.add.text(this.game.width * 0.5, this.game.height * 0.5, 'Game', {
-      font: '42px Arial', fill: '#ffffff', align: 'center'
-    });
-    //text.anchor.set(0.5);
-//
-    var ttc = new TicTacToe(this.game,3);
-    this.game.add.existing(ttc);
-    ttc.init();
-    var players = [
-      (new HumanPlayer(this.game,ttc,'✗')),
-      (new BotPlayer(this.game,ttc,'o'))
-    //  (new HumanPlayer(),ttc),
-    ];
-    ttc.setPlayers(players);
-
-    //this.input.onDown.add(this.endGame, this);
+    this.ttc = new TicTacToe(this.game,3);
+    this.game.add.existing(this.ttc);
+    this.ttc.init();
+    this.players = [
+      (new HumanPlayer(this.game,this.ttc,'✗')),
+      (new BotPlayer(this.game,this.ttc,'o'))
+    ]
+    this.ttc.signals.win.add(this.win,this)
+    this.ttc.setPlayers(this.players);
   }
 
-  update() {
+  win(data) {
+    var result;
+    if (data.player == -1) {
+        result= 'Draw!';
+    } else {
+        result = 'Player '+ (data.player+1)+' wins!';
+    }
 
+    alert(result);
+    this.game.state.start('game');
   }
-
-  endGame() {
-    this.game.state.start('gameover');
-  }
-
 }
 
 export default Game;

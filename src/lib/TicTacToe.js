@@ -30,6 +30,9 @@ class TicTacToe extends Phaser.Sprite {
 
       })
     }
+    this.active = true;
+    this.signals = {};
+    this.signals.win = new Phaser.Signal();
   }
 
   setPlayers (players) {
@@ -37,6 +40,7 @@ class TicTacToe extends Phaser.Sprite {
   }
 
   update () {
+    if (!this.active) return;
     var player =this.players.current();
     if (!player) return;
     if (player.point) {
@@ -71,19 +75,21 @@ class TicTacToe extends Phaser.Sprite {
       }
   }
 
+  checkVictory(point) {
+    if (this.isFinalPoint(point)) {
+        this.signals.win.dispatch({player:this.players.index});
+      } else {
+        for (var y of this.field) for (var x of y) if (x==null) {return;}
+        this.signals.win.dispatch({player:-1});
+      }
+  }
+
   makePoint(point,val) {
       var x = point.x;
       var y = point.y;
       this.field[y][x] = val;
       this.field_representation[y][x].text = val;
-      if (this.isFinalPoint(point)) {
-        alert("PLAYER "+this.players.index+" WIN");
-        //this.game.state.start('gameover');
-      } else {
-        for (y of this.field) for (x of y) if (x==null) {return;}
-        alert("DRAW");
-        //this.game.state.start('gameover');
-      }
+      this.checkVictory(point);
   }
 
   getSettings() {
@@ -98,28 +104,28 @@ class TicTacToe extends Phaser.Sprite {
   }
 
   isFinalPoint(point) {
-			var x = point.x,
-			    y = point.y,
-			    val = this.field[y][x];
+            var x = point.x,
+                y = point.y,
+                val = this.field[y][x];
 
-			if (this.field[y].every((p)=>{
-				return p==val;
-			})==true) return true;
+            if (this.field[y].every((p)=>{
+                return p==val;
+            })==true) return true;
 
 
-			if (this.field.every((p)=>{
-				return p[x]==val;
-			})==true) return true;
+            if (this.field.every((p)=>{
+                return p[x]==val;
+            })==true) return true;
 
-			if ( ((y == 0 || y == this.size-1) && (x == 0 || x==this.size-1)) || x == y == this.middle ) {
-			   var result = true;
-					for (var _x= _y =0; (_x<this.size && _y<this.size); _x++,_y++) {
-						result = result && (this.field[_y][_x] == val);
-					}
-					if(result) return result;
-					 for (var _x=0, _y =this.size-1; (_x<this.size && _y>0); _x++,_y--)  result = result && ( this.field[_y][_x] == val ); if(result) return result;
-			}
-			return false;
+            if ( ((y == 0 || y == this.size-1) && (x == 0 || x==this.size-1)) || x == y == this.middle ) {
+               var result = true;
+                    for (var _x= _y =0; (_x<this.size && _y<this.size); _x++,_y++) {
+                        result = result && (this.field[_y][_x] == val);
+                    }
+                    if(result) return result;
+                     for (var _x=0, _y =this.size-1; (_x<this.size && _y>0); _x++,_y--)  result = result && ( this.field[_y][_x] == val ); if(result) return result;
+            }
+            return false;
   }
 
 }

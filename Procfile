@@ -1,1 +1,1 @@
-web: npm install && npm run prebuild && npm run build
+web: npm start

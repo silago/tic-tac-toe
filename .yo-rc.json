@@ -1,0 +1,7 @@
+{
+  "generator-phaser": {
+    "projectName": "tic-tac-toe",
+    "esVersion": 6,
+    "gameFolder": "boilerplate"
+  }
+}

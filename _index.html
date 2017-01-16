@@ -1,0 +1,126 @@
+<html>
+	<head>
+		<script type="text/javascript" >
+
+					var arr = [
+						[1,null,null],
+						[1,null,null],
+						[null,null,1]
+					];
+					var size   = 3;
+					var middle = 1; 
+
+
+					function isPointFinalPoint (point) {
+						var x = point.x;
+						var y = point.y;
+						var point = {y,x};
+						var val = arr[y][x];
+						
+						if (arr[y].every((p)=>{
+							return p==val;
+						})==true) return true;
+
+
+						if (arr.every((p)=>{
+							return p[x]==val;
+						})==true) return true;
+
+						if ( ((y == 0 || y == size-1) && (x == 0 || x==size-1)) || x == y == middle ) {
+						   var result = true;
+								for (var _x= _y =0; (_x<size && _y<size); _x++,_y++) {
+									result = result && (arr[_y][_x] == val);
+								}
+								if(result) return result;
+								 for (var _x= _Y =size-1; (_x>=0 && _y>0); _x--,_y--)  result = result && ( arr[_y][_x] == val ); if(result) return result;
+						}
+						return false;
+					}
+
+
+					function getPointToCheck(val) {
+						for (val of [1,-1]) {
+
+						for (y in arr) {
+							if (arr[y].filter(p=>p==val).length==2 && arr[y].indexOf(null)!=-1) {
+								return {
+										y,x:arr[y].indexOf(null)
+								}
+							}
+						}
+						console.log('match x');
+						var _reversed_array = [];
+						for (var y in arr) {
+							for (var x in arr[y])	{ 
+										_reversed_array[y] = [];
+										_reversed_array[y][x]=arr[x][y];
+							}
+						}
+						for (x in _reversed_array) {
+							if (_reversed_array[x].filter(p=>p==val).length==2 && _reversed_array[x].indexOf(null)!=-1) {
+								return {
+										y:_reversed_array[x].indexOf(null),x
+								}
+							}
+						}
+
+						if ( ((y == 0 || y == size) && (x == 0 || x==size)) || x == y == middle ) {
+						   var result = {'null':[],'val': [] };
+						   var isLeftOneForMatch = function(result) { return  result['val'].length==size-1 && result['null'].length==1;}
+
+						   for (var _x= _y=0; (_x<size && _y<size); _x++,_y++) {
+								if (arr[_y,_x] == val)  result.val.push({x,y});
+								if (arr[_y,_x] == null) result['null'].push({x,y});
+						   };
+						   if (isLeftOneForMatch(result)) { return result['null'][0]; }
+						   var result = {'null':[],'val': [] };
+						   for (var _x= _y=size-1; (_x>=size && _y>=0); _x--,_y--) {
+								if (arr[_y,_x] == val)  result.val.push({x,y});
+								if (arr[_y,_x] == null) result['null'].push({x,y});
+						   };
+						   if (isLeftOneForMatch(result)) { return result['null'][0]; }
+						}
+						}
+						for (y in arr) for (x in arr[y]) if (arr[y][x]==null) return {y,x};
+						return null;
+					}
+					
+					function makePoint(y,x,val) {
+						alert(val);
+						arr[y][x]=val;
+					}
+					var Player = function(val) {
+						this.value = val;
+						this.step  = (()=>getPointToCheck(this.value));
+					}
+
+					var players = {
+							items: [
+							 new Player(1),
+							 new Player(-1)
+							],
+							index: 0,
+							next: 	 (function() {if (this.index==1) this.index=0; else this.index=1; return this.items[this.index]}),
+							current: (function() {return this.items[this.index]})
+						};
+					var game={
+						interval : false,
+						launch: (function()  {
+							this.interval = setInterval((()=>{
+								console.table(arr);
+								var point = players.next().step();
+								console.log(players.current());
+								console.log(point);
+								arr[point.y][point.x] = players.current().value;
+								if(isPointFinalPoint(point)) {
+									clearInterval(this.interval);
+								}
+							}),5000);
+						})
+					}
+		</script>
+	</head>
+
+	<body>
+	</body>
+</html>

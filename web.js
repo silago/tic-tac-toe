@@ -7,8 +7,9 @@ app.set('port', process.env.PORT || 3000);
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.get('/', (req, res) => res.render('index'));
+app.get('/', (req, res) => res.sendfile('index'));
 
 app.listen(app.get('port'), () => {
   console.log('\nExpress server up and running at http://localhost:%s.\n', app.get('port'));
 });
+

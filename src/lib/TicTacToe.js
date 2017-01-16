@@ -37,6 +37,7 @@ class TicTacToe extends Phaser.Sprite {
 
   setPlayers (players) {
     this.players.players = players;
+    this.players.players[0].active=true;
   }
 
   update () {
@@ -45,11 +46,11 @@ class TicTacToe extends Phaser.Sprite {
     if (!player) return;
     if (player.point) {
       if (this.isValid(player.point)) {
-          this.makePoint(player.point,player.value);
           this.players.players[this.players.index].active = false;
-          this.players.players[this.players.index].point = null;
-          this.players.next();
-          console.log('point');
+          if (this.makePoint(player.point,player.value)) {
+            this.players.players[this.players.index].point  = null;
+            this.players.next();
+          }
       } else {
           this.players.players[this.players.index].point = null;
       }
@@ -78,10 +79,13 @@ class TicTacToe extends Phaser.Sprite {
   checkVictory(point) {
     if (this.isFinalPoint(point)) {
         this.signals.win.dispatch({player:this.players.index});
+        return true;
       } else {
-        for (var y of this.field) for (var x of y) if (x==null) {return;}
+        for (var y of this.field) for (var x of y) if (x==null) {return false;}
         this.signals.win.dispatch({player:-1});
+        return true;
       }
+        return false;
   }
 
   makePoint(point,val) {
@@ -89,7 +93,7 @@ class TicTacToe extends Phaser.Sprite {
       var y = point.y;
       this.field[y][x] = val;
       this.field_representation[y][x].text = val;
-      this.checkVictory(point);
+      return !this.checkVictory(point);
   }
 
   getSettings() {

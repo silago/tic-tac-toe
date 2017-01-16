@@ -19,14 +19,18 @@ class BotPlayer extends Phaser.Sprite {
   }
   
   update() {
+    
     if (this.active && !this.point && !this.timeout) {
+        this.point = null;
         this.timeout = setTimeout(() => {
             this.point = this.getPointToCheck();
             this.timeout=null;
         },1000);
     }
   }
+
   init() {
+
   }
 
   getPointToCheck() {
@@ -35,8 +39,8 @@ class BotPlayer extends Phaser.Sprite {
 
         var _reversed_array = [];
         for (var y in arr) {
+            _reversed_array[y] = [];
             for (var x in arr[y])    {
-                        _reversed_array[y] = [];
                         _reversed_array[y][x]=arr[x][y];
             if (vals.indexOf(arr[x][y])==-1) {
               vals.push(arr[x][y]);

@@ -16,14 +16,12 @@ class HumanPlayer extends Phaser.Sprite {
   }
 
   check(y,x) {
-    this.point = {y,x}
+    if (this.active) {
+     this.point = {y,x}
+    }
   }
 
   update() {
-    if (this.active && this.game.input.mousePointer.isDown) {
-      this.point = {x:game.input.x,y:game.input.y};
-
-    }
   }
   init() {
 
